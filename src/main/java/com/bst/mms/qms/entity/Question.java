@@ -1,12 +1,11 @@
 package com.bst.mms.qms.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Entity
@@ -22,5 +21,17 @@ public class Question {
     @Enumerated (EnumType.ORDINAL)
     private DifficultyLevel difficultyLevel;
 
-    private ArrayList<String> answerOptions;
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
+
+    private List<AnswerOption> answerOptions = new ArrayList<AnswerOption>();
+
+    public Question() {
+    }
+
+    public Question(Integer topicId, String question, DifficultyLevel difficultyLevel, List<String> answerOptions) {
+        this.topicId = topicId;
+        this.question = question;
+        this.difficultyLevel = difficultyLevel;
+        answerOptions.forEach(option -> this.answerOptions.add(new AnswerOption(this, option)));
+    }
 }

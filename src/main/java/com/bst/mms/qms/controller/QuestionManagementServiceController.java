@@ -27,6 +27,7 @@ public class QuestionManagementServiceController {
         }
         catch (Exception exception) {
             httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+            System.out.println("Exception:"+exception.getMessage());
         }
         finally {
             questionResponseEntity = new ResponseEntity<>(questionCreated, httpStatus);
@@ -34,7 +35,7 @@ public class QuestionManagementServiceController {
         return questionResponseEntity;
     }
 
-    @GetMapping("findOne/{topicId}/{questionId}")
+    @GetMapping("find/{topicId}/{questionId}")
     public ResponseEntity<Question> findQuestionByTopicIdAndQuestionId(@PathVariable Integer topicId,
                                                                         @PathVariable Integer questionId) {
         ResponseEntity<Question> questionResponseEntity;
@@ -43,18 +44,16 @@ public class QuestionManagementServiceController {
 
         try {
             question = questionManagementService.findQuestionByTopicIdAndQuestionId(topicId, questionId);
-            httpStatus = HttpStatus.CREATED;
         }
         catch (Exception exception) {
             httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+            System.out.println("Exception:"+exception.getMessage());
         }
         finally {
             questionResponseEntity = new ResponseEntity<>(question, httpStatus);
         }
         return questionResponseEntity;
     }
-
-
 
     @GetMapping("findAll/{topicId}")
     public ResponseEntity<List<Question>> findAllQuestionsByTopicId(@PathVariable Integer topicId) {
@@ -69,6 +68,7 @@ public class QuestionManagementServiceController {
         }
         catch (Exception exception) {
             httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+            System.out.println("Exception:"+exception.getMessage());
         }
         finally {
             questionListResponseEntity = new ResponseEntity<>(questionList, httpStatus);

@@ -8,6 +8,6 @@ public class QuestionManagementServiceApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(QuestionManagementServiceApplication.class, args);
-		System.out.println("Hello World! Tomcat Running...");
+		System.out.println("Tomcat Running for Question Management Service...");
 	}
 }
