@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import javax.swing.text.html.Option;
-
 @Data
 @Entity
 public class AnswerOption {
@@ -15,16 +13,10 @@ public class AnswerOption {
 
     private String option;
 
+    private Boolean isAnswer;
+
     @JsonIgnore
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id", referencedColumnName="id", foreignKey = @ForeignKey(name="id"))
     private Question question;
-
-    public AnswerOption() {
-    }
-
-    public AnswerOption(Question question, String option) {
-        setQuestion(question);;
-        setOption(option);
-    }
 }

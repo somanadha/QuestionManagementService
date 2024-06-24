@@ -14,6 +14,7 @@ public class QuestionManagementService {
     QuestionManagementServiceDataAccessObject questionManagementServiceDataAccessObject;
 
     public Question addQuestion(Question question) {
+        question.getAnswerOptions().forEach(option -> option.setQuestion(question));
         return questionManagementServiceDataAccessObject.save(question);
     }
 

@@ -1,6 +1,6 @@
 package com.bst.mms.qms.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.bst.mms.qms.data.DifficultyLevel;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -18,20 +18,11 @@ public class Question {
 
     private String question;
 
+    private Boolean hasMultipleAnswers;
+
     @Enumerated (EnumType.ORDINAL)
     private DifficultyLevel difficultyLevel;
 
-    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
-
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<AnswerOption> answerOptions = new ArrayList<AnswerOption>();
-
-    public Question() {
-    }
-
-    public Question(Integer topicId, String question, DifficultyLevel difficultyLevel, List<String> answerOptions) {
-        this.topicId = topicId;
-        this.question = question;
-        this.difficultyLevel = difficultyLevel;
-        answerOptions.forEach(option -> this.answerOptions.add(new AnswerOption(this, option)));
-    }
 }
