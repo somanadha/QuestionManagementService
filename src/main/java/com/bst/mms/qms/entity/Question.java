@@ -1,6 +1,6 @@
 package com.bst.mms.qms.entity;
 
-import com.bst.mms.qms.data.DifficultyLevel;
+import com.bst.mms.qms.dao.DifficultyLevel;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -16,12 +16,12 @@ public class Question {
 
     private Integer topicId;
 
-    private String question;
+    private String questionText;
 
-    private Boolean hasMultipleAnswers;
+    private Boolean hasMultipleAnswers = false;
 
     @Enumerated (EnumType.ORDINAL)
-    private DifficultyLevel difficultyLevel;
+    private DifficultyLevel difficultyLevel = DifficultyLevel.Moderate;
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<AnswerOption> answerOptions = new ArrayList<AnswerOption>();

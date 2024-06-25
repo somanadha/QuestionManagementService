@@ -2,7 +2,7 @@ server:
   port: 8100
 spring:
   application:
-    name: QuestionManagementService
+    name: question-management-service
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/mms_qms_db
