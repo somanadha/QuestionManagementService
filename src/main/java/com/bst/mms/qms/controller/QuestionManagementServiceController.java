@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.AbstractMap.SimpleEntry;
+import java.util.Map.Entry;
 import java.util.List;
 import java.util.Map;
 
@@ -18,9 +18,9 @@ public class QuestionManagementServiceController {
     QuestionManagementService questionManagementService;
 
     @PostMapping("add")
-    public ResponseEntity<SimpleEntry<String,List<String>>> saveQuestion(@RequestBody Question question) {
-        ResponseEntity<SimpleEntry<String,List<String>>> questionResponseEntity;
-        SimpleEntry<String,List<String>> questionCreated = null;
+    public ResponseEntity<Entry<String,List<Entry<Integer, String>>>> saveQuestion(@RequestBody Question question) {
+        ResponseEntity<Entry<String,List<Entry<Integer, String>>>> questionResponseEntity;
+        Entry<String,List<Entry<Integer, String>>> questionCreated = null;
         HttpStatus httpStatus = HttpStatus.OK;
 
         try {
@@ -38,11 +38,11 @@ public class QuestionManagementServiceController {
     }
 
     @GetMapping("find/{topicId}/{questionId}")
-    public ResponseEntity<SimpleEntry<String,List<String>>> findQuestionByTopicIdAndQuestionId(
+    public ResponseEntity<Entry<String,List<Entry<Integer, String>>>> findQuestionByTopicIdAndQuestionId(
             @PathVariable Integer topicId, @PathVariable Integer questionId) {
 
-        ResponseEntity<SimpleEntry<String,List<String>>> questionResponseEntity;
-        SimpleEntry<String,List<String>> questionAndAnswers = null;
+        ResponseEntity<Entry<String,List<Entry<Integer, String>>>> questionResponseEntity;
+        Entry<String,List<Entry<Integer, String>>> questionAndAnswers = null;
         HttpStatus httpStatus = HttpStatus.OK;
 
         try {
@@ -59,11 +59,11 @@ public class QuestionManagementServiceController {
     }
 
     @GetMapping("findAll/{topicId}")
-    public ResponseEntity<Map<Integer, SimpleEntry<String,List<String>>>> findAllQuestionsByTopicId(
+    public ResponseEntity<Map<Integer, Entry<String,List<Entry<Integer, String>>>>> findAllQuestionsByTopicId(
             @PathVariable Integer topicId) {
 
-        ResponseEntity<Map<Integer, SimpleEntry<String,List<String>>>> questionListResponseEntity;
-        Map<Integer, SimpleEntry<String,List<String>>> questionsMap = null;
+        ResponseEntity<Map<Integer, Entry<String,List<Entry<Integer, String>>>>> questionListResponseEntity;
+        Map<Integer, Entry<String,List<Entry<Integer, String>>>> questionsMap = null;
         HttpStatus httpStatus = HttpStatus.OK;
 
         try {
@@ -81,11 +81,11 @@ public class QuestionManagementServiceController {
     }
 
     @GetMapping("findRandom/{topicId}/{difficulty}/{count}")
-    public ResponseEntity<Map<Integer, SimpleEntry<String,List<String>>>> findRandomQuestions(
+    public ResponseEntity<Map<Integer, Entry<String,List<Entry<Integer, String>>>>> findRandomQuestions(
             @PathVariable Integer topicId, @PathVariable Integer difficulty, @PathVariable Integer count) {
 
-        ResponseEntity<Map<Integer, SimpleEntry<String,List<String>>>> questionListResponseEntity;
-        Map<Integer, SimpleEntry<String,List<String>>> questionsMap= null;
+        ResponseEntity<Map<Integer, Entry<String,List<Entry<Integer, String>>>>> questionListResponseEntity;
+        Map<Integer, Entry<String,List<Entry<Integer, String>>>> questionsMap= null;
         HttpStatus httpStatus = HttpStatus.OK;
 
         try {

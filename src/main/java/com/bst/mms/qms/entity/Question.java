@@ -25,4 +25,6 @@ public class Question {
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<AnswerOption> answerOptions = new ArrayList<AnswerOption>();
+
+    private Boolean isObsolete = false;
 }

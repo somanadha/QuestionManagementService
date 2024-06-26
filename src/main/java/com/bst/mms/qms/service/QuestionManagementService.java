@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.AbstractMap.SimpleEntry;
+import java.util.Map.Entry;
+
+import static java.util.Map.entry;
 
 @Service
 public class QuestionManagementService {
@@ -14,47 +16,47 @@ public class QuestionManagementService {
     @Autowired
     QuestionManagementServiceRepository questionManagementServiceRepository;
 
-    public SimpleEntry<String,List<String>> saveQuestion(Question question) {
+    public Entry<String,List<Entry<Integer, String>>> saveQuestion(Question question) {
         question.getAnswerOptions().forEach(option -> option.setQuestion(question));
         return convertQuestionToPrimitive(questionManagementServiceRepository.save(question));
     }
 
-    public Map<Integer, SimpleEntry<String,List<String>>> findAllQuestionsByTopicId(Integer topicId) {
+    public Map<Integer, Entry<String,List<Entry<Integer, String>>>> findAllQuestionsByTopicId(Integer topicId) {
         return convertQuestionListToPrimitiveList(questionManagementServiceRepository.findAllByTopicId(topicId));
     }
 
-    public SimpleEntry<String,List<String>> findQuestionByTopicIdAndQuestionId(Integer topicId, Integer questionId) {
+    public Entry<String,List<Entry<Integer, String>>> findQuestionByTopicIdAndQuestionId(Integer topicId, Integer questionId) {
         return convertQuestionToPrimitive(questionManagementServiceRepository.findByTopicIdAndId(topicId, questionId));
     }
 
-    public Map<Integer, SimpleEntry<String,List<String>>> findRandomQuestions(Integer topicId, Integer difficulty, Integer count) {
+    public Map<Integer, Entry<String,List<Entry<Integer, String>>>> findRandomQuestions(Integer topicId, Integer difficulty, Integer count) {
         return convertQuestionListToPrimitiveList(questionManagementServiceRepository.findRandomQuestionsByTopicIdAndDifficultyLevel(
                 topicId, difficulty, count));
     }
 
-    private Map<Integer, SimpleEntry<String,List<String>>> convertQuestionListToPrimitiveList(
+    private Map<Integer, Entry<String,List<Entry<Integer, String>>>> convertQuestionListToPrimitiveList(
             List<Question> questions){
 
-        HashMap<Integer, SimpleEntry<String,List<String>>> questionsAndOptionsMap = new HashMap<>();
+        HashMap<Integer, Entry<String,List<Entry<Integer, String>>>> questionsAndOptionsMap = new HashMap<>();
         if (questions != null && !questions.isEmpty()){
             questions.forEach(question ->  {
-                SimpleEntry<String, List<String>> questionAndOptions = convertQuestionToPrimitive(question);
+                Entry<String, List<Entry<Integer, String>>> questionAndOptions = convertQuestionToPrimitive(question);
                 questionsAndOptionsMap.put(question.getId(), questionAndOptions);
             });
         }
         return questionsAndOptionsMap;
     }
 
-    private SimpleEntry<String, List<String>> convertQuestionToPrimitive(Question question) {
+    private Entry<String, List<Entry<Integer, String>>> convertQuestionToPrimitive(Question question) {
         String questionText = "";
-        List<String> answersList = new ArrayList<>();
+        List<Entry<Integer, String>> answersList = new ArrayList<>();
         if (question != null) {
             questionText = question.getQuestionText();
             var answerOptions = question.getAnswerOptions();
             if (answerOptions != null && !answerOptions.isEmpty()) {
-                answerOptions.forEach(answer -> answersList.add(answer.getOption()));
+                answerOptions.forEach(answer -> answersList.add(Map.entry(answer.getId(), answer.getOption())));
             }
         }
-        return new SimpleEntry<String, List<String>>(questionText, answersList);
+        return Map.entry(questionText, answersList);
     }
 }

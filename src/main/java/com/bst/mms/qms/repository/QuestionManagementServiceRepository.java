@@ -14,7 +14,7 @@ public interface QuestionManagementServiceRepository extends JpaRepository<Quest
 
     Question findByTopicIdAndId(Integer topicId, Integer id);
 
-    @Query(value = "SELECT * FROM question q WHERE q.topicId=:topicId AND q.difficultyLevel=:difficultyLevel ORDER BY RANDOM() LIMIT :questionCount",
+    @Query(value = "SELECT * FROM question q WHERE q.topic_id=:topicId AND q.difficulty_level=:difficultyLevel ORDER BY RANDOM() LIMIT :questionCount",
             nativeQuery = true)
     List<Question> findRandomQuestionsByTopicIdAndDifficultyLevel(Integer topicId, Integer difficultyLevel,
                                                                   int questionCount);
