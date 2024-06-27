@@ -1,14 +1,12 @@
 package com.bst.mms.qms.service;
 
+import com.bst.mms.dto.QuestionDTO;
 import com.bst.mms.qms.repository.QuestionManagementServiceRepository;
 import com.bst.mms.qms.entity.Question;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.Map.Entry;
-
-import static java.util.Map.entry;
 
 @Service
 public class QuestionManagementService {
@@ -16,47 +14,31 @@ public class QuestionManagementService {
     @Autowired
     QuestionManagementServiceRepository questionManagementServiceRepository;
 
-    public Entry<String,List<Entry<Integer, String>>> saveQuestion(Question question) {
+    public QuestionDTO saveQuestion(Question question) {
         question.getAnswerOptions().forEach(option -> option.setQuestion(question));
-        return convertQuestionToPrimitive(questionManagementServiceRepository.save(question));
+        return questionManagementServiceRepository.save(question).extractDTO();
     }
 
-    public Map<Integer, Entry<String,List<Entry<Integer, String>>>> findAllQuestionsByTopicId(Integer topicId) {
-        return convertQuestionListToPrimitiveList(questionManagementServiceRepository.findAllByTopicId(topicId));
+    public List<QuestionDTO> findAllQuestionsByTopicId(Integer topicId) {
+        return convertToDTOList(questionManagementServiceRepository.findAllByTopicId(topicId));
     }
 
-    public Entry<String,List<Entry<Integer, String>>> findQuestionByTopicIdAndQuestionId(Integer topicId, Integer questionId) {
-        return convertQuestionToPrimitive(questionManagementServiceRepository.findByTopicIdAndId(topicId, questionId));
+    public QuestionDTO findQuestionByTopicIdAndQuestionId(Integer topicId, Integer questionId) {
+        return questionManagementServiceRepository.findByTopicIdAndQuestionId(topicId, questionId).extractDTO();
     }
 
-    public Map<Integer, Entry<String,List<Entry<Integer, String>>>> findRandomQuestions(Integer topicId, Integer difficulty, Integer count) {
-        return convertQuestionListToPrimitiveList(questionManagementServiceRepository.findRandomQuestionsByTopicIdAndDifficultyLevel(
+    public List<QuestionDTO> findRandomQuestions(Integer topicId, Integer difficulty, Integer count) {
+        return convertToDTOList(questionManagementServiceRepository.findRandomQuestionsByTopicIdAndDifficultyLevel(
                 topicId, difficulty, count));
     }
 
-    private Map<Integer, Entry<String,List<Entry<Integer, String>>>> convertQuestionListToPrimitiveList(
-            List<Question> questions){
-
-        HashMap<Integer, Entry<String,List<Entry<Integer, String>>>> questionsAndOptionsMap = new HashMap<>();
-        if (questions != null && !questions.isEmpty()){
-            questions.forEach(question ->  {
-                Entry<String, List<Entry<Integer, String>>> questionAndOptions = convertQuestionToPrimitive(question);
-                questionsAndOptionsMap.put(question.getId(), questionAndOptions);
-            });
-        }
-        return questionsAndOptionsMap;
+    public List<QuestionDTO> findQuestionAndAnswerOptionsDTOListByQuestionIds(List<Integer> questionIds) {
+        return convertToDTOList(questionManagementServiceRepository.findAllByQuestionIdIn(questionIds));
     }
 
-    private Entry<String, List<Entry<Integer, String>>> convertQuestionToPrimitive(Question question) {
-        String questionText = "";
-        List<Entry<Integer, String>> answersList = new ArrayList<>();
-        if (question != null) {
-            questionText = question.getQuestionText();
-            var answerOptions = question.getAnswerOptions();
-            if (answerOptions != null && !answerOptions.isEmpty()) {
-                answerOptions.forEach(answer -> answersList.add(Map.entry(answer.getId(), answer.getOption())));
-            }
-        }
-        return Map.entry(questionText, answersList);
+    private List<QuestionDTO> convertToDTOList(List<Question> questionsList){
+        List<QuestionDTO> questionsDTOList = new ArrayList<>();
+        questionsList.forEach(question -> questionsDTOList.add(question.extractDTO()));
+        return questionsDTOList;
     }
 }

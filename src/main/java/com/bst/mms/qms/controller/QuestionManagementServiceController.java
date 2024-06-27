@@ -1,5 +1,6 @@
 package com.bst.mms.qms.controller;
 
+import com.bst.mms.dto.QuestionDTO;
 import com.bst.mms.qms.entity.Question;
 import com.bst.mms.qms.service.QuestionManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,9 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map.Entry;
 import java.util.List;
-import java.util.Map;
 
 @RequestMapping("qms")
 @RestController
@@ -18,87 +17,103 @@ public class QuestionManagementServiceController {
     QuestionManagementService questionManagementService;
 
     @PostMapping("add")
-    public ResponseEntity<Entry<String,List<Entry<Integer, String>>>> saveQuestion(@RequestBody Question question) {
-        ResponseEntity<Entry<String,List<Entry<Integer, String>>>> questionResponseEntity;
-        Entry<String,List<Entry<Integer, String>>> questionCreated = null;
-        HttpStatus httpStatus = HttpStatus.OK;
+    public ResponseEntity<QuestionDTO> saveQuestion(@RequestBody Question question) {
+        ResponseEntity<QuestionDTO> questionDTOResponseEntity;
+        QuestionDTO questionDTO = null;
+        HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 
         try {
-            questionCreated = questionManagementService.saveQuestion(question);
+            questionDTO = questionManagementService.saveQuestion(question);
             httpStatus = HttpStatus.CREATED;
         }
         catch (Exception exception) {
-            httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
             System.out.println("Exception:"+exception.getMessage());
         }
         finally {
-            questionResponseEntity = new ResponseEntity<>(questionCreated, httpStatus);
+            questionDTOResponseEntity = new ResponseEntity<>(questionDTO, httpStatus);
         }
-        return questionResponseEntity;
+        return questionDTOResponseEntity;
     }
 
     @GetMapping("find/{topicId}/{questionId}")
-    public ResponseEntity<Entry<String,List<Entry<Integer, String>>>> findQuestionByTopicIdAndQuestionId(
-            @PathVariable Integer topicId, @PathVariable Integer questionId) {
+    public ResponseEntity<QuestionDTO> findQuestionByTopicIdAndQuestionId(@PathVariable Integer topicId,
+                                                                          @PathVariable Integer questionId) {
 
-        ResponseEntity<Entry<String,List<Entry<Integer, String>>>> questionResponseEntity;
-        Entry<String,List<Entry<Integer, String>>> questionAndAnswers = null;
-        HttpStatus httpStatus = HttpStatus.OK;
+        ResponseEntity<QuestionDTO> questionDTOResponseEntity;
+        QuestionDTO questionDTO = null;
+        HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 
         try {
-            questionAndAnswers = questionManagementService.findQuestionByTopicIdAndQuestionId(topicId, questionId);
+            questionDTO = questionManagementService.findQuestionByTopicIdAndQuestionId(topicId, questionId);
+            httpStatus = HttpStatus.OK;
         }
         catch (Exception exception) {
-            httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
             System.out.println("Exception:"+exception.getMessage());
         }
         finally {
-            questionResponseEntity = new ResponseEntity<>(questionAndAnswers, httpStatus);
+            questionDTOResponseEntity = new ResponseEntity<>(questionDTO, httpStatus);
         }
-        return questionResponseEntity;
+        return questionDTOResponseEntity;
     }
 
     @GetMapping("findAll/{topicId}")
-    public ResponseEntity<Map<Integer, Entry<String,List<Entry<Integer, String>>>>> findAllQuestionsByTopicId(
-            @PathVariable Integer topicId) {
+    public ResponseEntity<List<QuestionDTO>> findAllQuestionsByTopicId(@PathVariable Integer topicId) {
 
-        ResponseEntity<Map<Integer, Entry<String,List<Entry<Integer, String>>>>> questionListResponseEntity;
-        Map<Integer, Entry<String,List<Entry<Integer, String>>>> questionsMap = null;
-        HttpStatus httpStatus = HttpStatus.OK;
+        ResponseEntity<List<QuestionDTO>> questionDTOListResponseEntity;
+        List<QuestionDTO> questionDTOList = null;
+        HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 
         try {
-            questionsMap = questionManagementService.findAllQuestionsByTopicId(topicId);
-            httpStatus = HttpStatus.CREATED;
+            questionDTOList = questionManagementService.findAllQuestionsByTopicId(topicId);
         }
         catch (Exception exception) {
-            httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
             System.out.println("Exception:"+exception.getMessage());
         }
         finally {
-            questionListResponseEntity = new ResponseEntity<>(questionsMap, httpStatus);
+            questionDTOListResponseEntity = new ResponseEntity<>(questionDTOList, httpStatus);
         }
-        return questionListResponseEntity;
+        return questionDTOListResponseEntity;
     }
 
     @GetMapping("findRandom/{topicId}/{difficulty}/{count}")
-    public ResponseEntity<Map<Integer, Entry<String,List<Entry<Integer, String>>>>> findRandomQuestions(
-            @PathVariable Integer topicId, @PathVariable Integer difficulty, @PathVariable Integer count) {
+    public ResponseEntity<List<QuestionDTO>> findRandomQuestions(@PathVariable Integer topicId,
+                                                                 @PathVariable Integer difficulty,
+                                                                 @PathVariable Integer count) {
 
-        ResponseEntity<Map<Integer, Entry<String,List<Entry<Integer, String>>>>> questionListResponseEntity;
-        Map<Integer, Entry<String,List<Entry<Integer, String>>>> questionsMap= null;
-        HttpStatus httpStatus = HttpStatus.OK;
+        ResponseEntity<List<QuestionDTO>> questionDTOListResponseEntity;
+        List<QuestionDTO> questionDTOList = null;
+        HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 
         try {
-            questionsMap = questionManagementService.findRandomQuestions(topicId, difficulty, count);
+            questionDTOList = questionManagementService.findRandomQuestions(topicId, difficulty, count);
             httpStatus = HttpStatus.CREATED;
         }
         catch (Exception exception) {
-            httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
             System.out.println("Exception:"+exception.getMessage());
         }
         finally {
-            questionListResponseEntity = new ResponseEntity<>(questionsMap, httpStatus);
+            questionDTOListResponseEntity = new ResponseEntity<>(questionDTOList, httpStatus);
         }
-        return questionListResponseEntity;
+        return questionDTOListResponseEntity;
+    }
+
+    @GetMapping("findByIds")
+    public ResponseEntity<List<QuestionDTO>> findQuestionsByQuestionIdList(@RequestBody List<Integer> questionIds) {
+
+        ResponseEntity<List<QuestionDTO>> questionDTOListResponseEntity;
+        List<QuestionDTO> questionDTOList = null;
+        HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+
+        try {
+            questionDTOList = questionManagementService.findQuestionAndAnswerOptionsDTOListByQuestionIds(questionIds);
+            httpStatus = HttpStatus.CREATED;
+        }
+        catch (Exception exception) {
+            System.out.println("Exception:"+exception.getMessage());
+        }
+        finally {
+            questionDTOListResponseEntity = new ResponseEntity<>(questionDTOList, httpStatus);
+        }
+        return questionDTOListResponseEntity;
     }
 }
