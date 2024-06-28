@@ -23,6 +23,6 @@ public class AnswerOption implements DTOExtractable<AnswerOptionDTO>{
     private Question question;
 
     public AnswerOptionDTO extractDTO() {
-        return new AnswerOptionDTO(answerId, answerOptionText);
+        return new AnswerOptionDTO(answerId, answerOptionText, false);
     }
 }
