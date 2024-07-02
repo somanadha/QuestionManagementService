@@ -1,0 +1,26 @@
+services:
+  qms-ws:
+    build: .
+    networks:
+      - eurekadiscoveryserver_mms-network
+    ports:
+      - "8100:8100"
+  qms-db:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: qms_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: abcd1234
+    networks:
+      - eurekadiscoveryserver_mms-network
+    ports:
+      - "5452:5432"
+    volumes:
+      - db-volume:/var/lib/postgresql/data
+
+networks:
+  eurekadiscoveryserver_mms-network:
+    external: true
+
+volumes:
+  db-volume:
